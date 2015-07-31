@@ -1,0 +1,8 @@
+\part[The Original Trillogy]{The Original\\Trillogy}
+	\label{part:original-trillogy}
+
+\psection{Introduction to Part~\thepart}
+
+\IEEEPARstart{I}{t all} started in 1977 with a film called Star Wars---later
+retitled to "Star Wars Episode IV: A New Hope".  Two sequels were later
+released, titled "The Empire Strikes Back" and "Return of the Jedi".

@@ -1,0 +1,5 @@
+\begin{dedication}
+
+To my templator, John Papandriopoulos.
+
+\end{dedication}

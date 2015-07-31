@@ -1,0 +1,124 @@
+%%
+%% VERSION HISTORY
+%%    22 May 2006 - John Papandriopoulos - Original version
+%%    12 Jul 2007 - John Papandriopoulos - Converted into template
+%%
+
+\documentclass[11pt,a4paper,titlepage,twoside,openright]{book}
+
+% Use the UniMelb Dissertation Template
+\usepackage{style/uomthesis}
+
+% For drafts uncomment the following line
+%\usepackage[light,timestamp,first]{draftcopy}
+
+% Comment out the following line TO MARK blank pages with the 
+% text "This page intentionally left blank."
+\newcommand{\markblankpages}{}
+
+% Comment out the following line for the copy submitted to the library
+\newcommand{\archivalpapernote}{}
+
+% User defined commands
+\input{user-defined}
+
+\begin{document}
+
+	%%
+	%% Front matter
+	%%
+	\begin{frontmatter}
+
+		\frontmatterheadings
+
+		% Collect the dissertation information for the title page
+		\input{metadata}
+		% Generate the title page
+		\maketitle
+
+		\input{0_1_abstract}
+
+		% Author declaration
+		\makedeclaration
+
+		% Acknowledgements
+		\input{0_2_acknowledgements}
+
+		% Preface
+		\input{0_3_preface}
+
+		% Dedications...
+                \input{0_4_dedication}
+
+		% TOC, LOF, LOT
+		{%
+			\singlespacing%
+			\tableofcontents%
+			\listoffigures%
+			% Do not include a list of tables if you have less
+			% than 10 tables, as per SGS suggestion.
+			\listoftables%
+		   \clearpage%
+		}%
+
+   \end{frontmatter}
+
+	%%
+	%% Main matter
+	%%
+	\begin{mainmatter}
+
+		\mainmatterheadings
+
+		% Introduction
+		\input{01_chapter-1}
+
+		\input{1_part-1}
+
+			\input{1_2_chapter-2}
+			\input{1_3_chapter-3}
+			\input{1_4_chapter-4}
+
+		\input{2_part-2}
+	   
+			\input{2_5_chapter-5}
+			\input{2_6_chapter-6}
+			\input{2_7_chapter-7}
+
+		% Conclusion
+	   \input{3_8_chapter-8}
+
+	\end{mainmatter}
+
+	%%
+	%% Appendix
+	%%
+	\begin{appendix}
+
+		\input{A_1_appendix}
+
+	\end{appendix}
+
+	%%
+	%% Bibliography
+	%%
+	\begin{backmatter}
+
+		\chapter*{\bibname}%
+		\markboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
+		%
+		% Uncomment the following line to produce a
+		% bibliography list of all entries in the bib database
+		%\nocite{*}
+		%
+		\bibliography{%
+			% Place your bib database files here, for example:
+			%bib/strings,%
+			%bib/wireless,%
+			%bib/dsl,%
+			%bib/selfpubs%
+		}
+	\end{backmatter}
+
+\end{document}
+%... and of four years work! :-)

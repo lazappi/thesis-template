@@ -30,6 +30,13 @@ PNDOC_OPTS :=
 TXC        := texcount
 TXC_OPTS   := -merge
 
+#-------------------------------------{ZIP}------------------------------------#
+
+##--------[ZIP SETTINGS]--------##
+
+ZIP        := zip
+ZIP_OPTS   := -r -u -9
+
 #----------------------------------{TARGETS}-----------------------------------#
 
 ##-------[MAIN TARGET]-------##
@@ -197,7 +204,7 @@ count:
 
 archive: | $(ARC_DIR)
 	@echo Archiving current build...
-	@zip -r $(ARC_DIR)/$(shell date -I) $(BUILD_DIR)
+	@$(ZIP) $(ZIP_OPTS) $(ARC_DIR)/$(shell date -I) $(BUILD_DIR)
 
 ##----------[CLEAN]----------##
 

@@ -66,6 +66,14 @@ The command `make count` produces a word count using the `texcount` script. By
 default this is a summary of all included files but other options can be set
 in the Makefile if desired.
 
+### Archive
+
+The command `make archive` will create a zipped copy of the build directory
+inside an archive directory. This can be useful for recording important
+milestones such as versions sent to supervisors, for example so `texdiff` can
+be used. It would be possible to get the records from `git` but this is
+easier.
+
 ### Clean
 
 A `make clean` command also exists which simply removes the build directory.

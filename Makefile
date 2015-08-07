@@ -30,6 +30,13 @@ PNDOC_OPTS :=
 TXC        := texcount
 TXC_OPTS   := -merge
 
+#-------------------------------------{ZIP}------------------------------------#
+
+##--------[ZIP SETTINGS]--------##
+
+ZIP        := zip
+ZIP_OPTS   := -r -u -9
+
 #----------------------------------{TARGETS}-----------------------------------#
 
 ##-------[MAIN TARGET]-------##
@@ -82,6 +89,10 @@ FIG        := $(addprefix $(BUILD_DIR)/$(FIG_DIR)/, $(FILES))      # Build names
 BIB_DIR    := bibliography
 BIB        := $(addprefix $(BUILD_DIR)/, $(wildcard $(BIB_DIR)/*))
 
+##----[ARCHIVE DIRECTORY]----##
+
+ARC_DIR    := build_archive
+
 ##-------[ALL SOURCES]-------##
 
 SOURCES    := $(BUILD_DIR)/$(TGT_IN) $(TEX) $(FIG) $(STY) $(BIB) $(TMPL) \
@@ -98,7 +109,7 @@ vpath %$(FIG_EXT) $(FIG_PATHS) # Figure path
 
 ##----------[PHONY]----------##
 
-.PHONY: build clean count
+.PHONY: build clean count archive
 
 ##------[BUILD TARGET]-------##
 
@@ -174,6 +185,12 @@ $(BUILD_DIR)/$(BIB_DIR):
 	@echo Making $(BUILD_DIR)/$(BIB_DIR)
 	@mkdir -p $(BUILD_DIR)/$(BIB_DIR)
 
+### Create archive directory if needed ##
+
+$(ARC_DIR):
+	@echo Making $(ARC_DIR)....
+	@mkdir -p $(ARC_DIR)
+
 ##----------[COUNT]----------##
 
 ### Produce word count ###
@@ -182,6 +199,12 @@ count:
 	@echo Counting words...
 	@cd $(BUILD_DIR) && \
 	    $(TXC) $(TXC_OPTS) $(TGT_IN)
+
+##---------[ARCHIVE]---------##
+
+archive: | $(ARC_DIR)
+	@echo Archiving current build...
+	@$(ZIP) $(ZIP_OPTS) $(ARC_DIR)/$(shell date -I) $(BUILD_DIR)
 
 ##----------[CLEAN]----------##
 

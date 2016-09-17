@@ -1,16 +1,22 @@
+import time
+
 MD_PATHS, = glob_wildcards("./{md_path}.md")
 STY, = glob_wildcards("./style/{sty}")
 BIB, = glob_wildcards("./bibliography/{bib}")
 FIG_PATHS, = glob_wildcards("./figures/{fig_path}.pdf")
 TMPL, = glob_wildcards("./template/{tmpl}.tex")
-print(FIG_PATHS)
-print(TMPL)
 
 IDS = [os.path.basename(MD) for MD in MD_PATHS]
 FIGS = [os.path.basename(FIG) for FIG in FIG_PATHS]
 
 MD_DICT = dict(zip(IDS, MD_PATHS))
 FIG_DICT = dict(zip(FIGS, FIG_PATHS))
+
+rule final:
+    input: "build/thesis.pdf"
+    output: "thesis.pdf"
+    message: "Copying final PDF..."
+    shell: "cp build/thesis.pdf thesis.pdf"
 
 rule build:
     input: expand("build/{id}.tex", id=IDS), "build/thesis.tex",
@@ -27,7 +33,7 @@ rule convert:
     input: lambda wildcards: MD_DICT[wildcards.id] + ".md"
     output:"build/{id}.tex"
     message: "Converting {input} from md to tex..."
-    shell: "pandoc -o {output} <(find . '{input}')"
+    shell: "pandoc -o {output} {input}"
 
 rule copy_main:
     input: "thesis.tex"
@@ -59,4 +65,15 @@ rule copy_template:
     message: "Copying {input} to {output}..."
     shell: "cp {input} {output}"
 
+rule count:
+    input: "build/thesis.tex"
+    message: "Counting words..."
+    shell: "cd build && texcount -merge thesis.tex"
 
+rule archive:
+    output: "archive/" + time.strftime("%Y-%m-%d") + ".zip"
+    shell: "zip -r -u -9 {output} build"
+
+rule clean:
+    message: "Removing build directory..."
+    shell: "rm -r build"

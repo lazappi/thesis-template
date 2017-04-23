@@ -5,3 +5,6 @@ build
 # Output file
 
 thesis.pdf
+
+# Snakemake
+.snakemake

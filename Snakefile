@@ -16,22 +16,40 @@ RMD_DICT = dict(zip(RMDS, RMD_PATHS))
 MD_DICT = dict(zip(IDS, MD_PATHS + ["build/" + RMD for RMD in RMDS]))
 FIG_DICT = dict(zip(FIGS, FIG_PATHS))
 
-rule final:
+rule pdf:
     input: "build/thesis.pdf"
     output: "thesis.pdf"
     message: "Copying final PDF..."
-    shell: "cp build/thesis.pdf thesis.pdf"
+    shell: "cp {input} {output}"
 
-rule build:
-    input: expand("build/{id}.tex", id=IDS), "build/thesis.tex",
-           expand("build/style/{sty}", sty=STY),
-           expand("build/bibliography/{bib}", bib=BIB),
-           expand("build/figures/{fig}.pdf", fig=FIGS),
-           expand("build/{tmpl}.tex", tmpl=TMPL)
+rule docx:
+    input: "build/thesis.docx"
+    output: "thesis.docx"
+    message: "Copying final docx..."
+    shell: "cp {input} {output}"
+
+rule build_pdf:
+    input: "build/thesis.tex",
     output:"build/thesis.pdf"
     message: "Building PDF..."
     shell: "cd build &&"
            "latexmk -pdf -pdflatex='pdflatex --shell-escape %O %S' thesis.tex"
+
+rule build_docx:
+    input: "build/thesis.tex"
+    output: "build/thesis.docx"
+    message: "Building docx..."
+    shell: "cd build && pandoc -o thesis.docx thesis.tex"
+
+rule tex:
+    input: expand("build/{id}.tex", id=IDS), "thesis.tex",
+           expand("build/style/{sty}", sty=STY),
+           expand("build/bibliography/{bib}", bib=BIB),
+           expand("build/figures/{fig}.pdf", fig=FIGS),
+           expand("build/{tmpl}.tex", tmpl=TMPL)
+    output: "build/thesis.tex"
+    message: "Copying thesis.tex to build directory..."
+    shell: "cp thesis.tex {output}"
 
 rule convert:
     input: lambda wildcards: MD_DICT[wildcards.id] + ".md"
@@ -45,12 +63,6 @@ rule knit:
     message: "Knitting {input} to {output}..."
     shell: """Rscript -e "rmarkdown::render('{input}',"""
            """'rmarkdown::md_document', output_dir = 'build')" """
-
-rule copy_main:
-    input: "thesis.tex"
-    output: "build/thesis.tex"
-    message: "Copying thesis.tex to build directory..."
-    shell: "cp {input} {output}"
 
 rule copy_style:
     input: "style/{sty}"

@@ -4,6 +4,7 @@ build
 # Output files
 thesis.pdf
 thesis.docx
+thesis.html
 
 # Snakemake
 .snakemake

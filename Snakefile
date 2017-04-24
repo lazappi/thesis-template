@@ -28,6 +28,12 @@ rule docx:
     message: "Copying final docx..."
     shell: "cp {input} {output}"
 
+rule html:
+    input: "build/thesis.html"
+    output: "thesis.html"
+    message: "Copying final html..."
+    shell: "cp {input} {output}"
+
 rule build_pdf:
     input: "build/thesis.tex",
     output:"build/thesis.pdf"
@@ -40,6 +46,12 @@ rule build_docx:
     output: "build/thesis.docx"
     message: "Building docx..."
     shell: "cd build && pandoc -o thesis.docx thesis.tex"
+
+rule build_html:
+    input: "build/thesis.tex"
+    output: "build/thesis.html"
+    message: "Building html..."
+    shell: "cd build && pandoc -o thesis.html thesis.tex"
 
 rule tex:
     input: expand("build/{id}.tex", id=IDS), "thesis.tex",

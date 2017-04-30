@@ -7,13 +7,13 @@ BIB, = glob_wildcards("./bibliography/{bib}")
 FIG_PATHS, = glob_wildcards("./figures/{fig_path}.pdf")
 TMPL, = glob_wildcards("./template/{tmpl}.tex")
 
-IDS = [os.path.basename(MD) for MD in MD_PATHS]
+MDS = [os.path.basename(MD) for MD in MD_PATHS]
 RMDS = [os.path.basename(RMD) for RMD in RMD_PATHS]
-IDS += RMDS
+IDS = MDS + RMDS
 FIGS = [os.path.basename(FIG) for FIG in FIG_PATHS]
 
 RMD_DICT = dict(zip(RMDS, RMD_PATHS))
-MD_DICT = dict(zip(IDS, MD_PATHS + ["build/" + RMD for RMD in RMDS]))
+ID_DICT = dict(zip(IDS, MD_PATHS + ["build/" + RMD for RMD in RMDS]))
 FIG_DICT = dict(zip(FIGS, FIG_PATHS))
 
 rule pdf:
@@ -54,7 +54,9 @@ rule build_html:
     shell: "cd build && pandoc -o thesis.html thesis.tex"
 
 rule tex:
-    input: expand("build/{id}.tex", id=IDS), "thesis.tex",
+    input: "thesis.tex",
+           expand("build/{id}.tex", id=IDS),
+           expand("build/{id}.md", id=IDS),
            expand("build/style/{sty}", sty=STY),
            expand("build/bibliography/{bib}", bib=BIB),
            expand("build/figures/{fig}.pdf", fig=FIGS),
@@ -63,17 +65,24 @@ rule tex:
     message: "Copying thesis.tex to build directory..."
     shell: "cp thesis.tex {output}"
 
-rule convert:
-    input: lambda wildcards: MD_DICT[wildcards.id] + ".md"
-    output:"build/{id}.tex"
+rule convert_md:
+    input: lambda wildcards: ID_DICT[wildcards.id] + ".md"
+    output: "build/{id}.tex"
     message: "Converting {input} from md to tex..."
     shell: "pandoc -o {output} {input}"
 
+rule copy_md:
+    input: lambda wildcards: ID_DICT[wildcards.id] + ".md"
+    output: "build/{id}.md"
+    message: "Copying {input} to {output}..."
+    shell: "cp {input} {output}"
+
 rule knit:
     input: lambda wildcards: RMD_DICT[wildcards.id] + ".Rmd"
-    output: "build/{id}.md"
-    message: "Knitting {input} to {output}..."
-    shell: """Rscript -e "rmarkdown::render('{input}',"""
+    output: md="build/{id}.md", rmd="build/{id}.Rmd"
+    message: "Knitting {input} to {output.md}..."
+    shell: "cp {input} {output.rmd} && "
+           """Rscript -e "rmarkdown::render('{input}',"""
            """'rmarkdown::md_document', output_dir = 'build')" """
 
 rule copy_style:

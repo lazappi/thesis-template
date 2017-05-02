@@ -1,10 +1,10 @@
 # Build directory
-
 build
 
-# Output file
-
+# Output files
 thesis.pdf
+thesis.docx
+thesis.html
 
 # Snakemake
 .snakemake
